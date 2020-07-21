@@ -26,7 +26,7 @@ def gather_player_bets(game):
                 bets.setdefault(player, [])
                 if size != '':
                     bets[player].append(float(re.search(r'\d+(\.)*\d*', size).group()))
-    # print(bets)
+
     return bets
 
 
