@@ -7,10 +7,13 @@ import os
 pyautogui.PAUSE = 1
 pyautogui.FAILSAFE = True
 
-filePos = open('C:\\Users\\arts\\Documents\\Web Scrapping\\position.txt', 'r')
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+filePos = open(os.path.join(basedir, 'position.txt'), 'r')
 coord = filePos.readlines()
 filePos.close()
-fileErr = open('C:\\Users\\arts\\Documents\\Web Scrapping\\errors.txt', 'r')
+fileErr = open(os.path.join(basedir, 'errors.txt'), 'r')
 errors = fileErr.readlines()
 fileErr.close()
 hands_no = re.findall(r'\d+', ''.join(errors))
@@ -56,23 +59,13 @@ for hand_no in hands_no:
                 else:
                     i = i + 1
                     continue
-            #if item_no == 0: # save 20th item of the page:
-            #    print(hand_no, page_no, p, item_no, i)
-            #    pyautogui.moveTo(int(x),int(y), duration=random.uniform(0.0, 0.25))
-            #    pyautogui.click()
-            #    time.sleep(1.5)
-            #    pyautogui.hotkey('ctrl','s')
-            #    pyautogui.typewrite('err_hand' + str(hand_no))
-            #    pyautogui.press('enter')
-            #    time.sleep(0.2)
-            #    pyautogui.press('esc')
-
             break
         elif p > page_no:
             break
         else:
             pyautogui.screenshot()
-            next = pyautogui.locateOnScreen('C:\\Users\\arts\\Documents\\Web Scrapping\\next.png',
-                                    confidence = 0.8)
+            next = pyautogui.locateOnScreen(
+                os.path.join(basedir, 'next.png'), confidence = 0.8
+            )
             pyautogui.click(pyautogui.center(next))
             p = p + 1

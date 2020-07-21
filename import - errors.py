@@ -4,6 +4,8 @@ import re
 import datetime
 import os
 
+
+
 def check_winner(dictionary):
     '''
         function should get as an argument 'game['status']['player']'.
@@ -59,10 +61,13 @@ def clear_name(nickname):
     else:
         nickname = re.sub(r'[():]', '', nickname).strip()
         return nickname
-#-------------------------------------------------------------------------------
-handFile = open('August+_2019.txt', 'w')# <--------------------- change to 'a' ?
+
+
+handFile = open('August+_2019.txt', 'w')
 errorFile = open('errors+.txt', 'w')
+
 dat = input()
+
 for file_hand in os.listdir():
 
     if file_hand.startswith('err_hand') and file_hand.endswith('.htm'):
@@ -116,13 +121,8 @@ for file_hand in os.listdir():
                 cards_known.setdefault(nicknames[-1],
                             ', '.join([tag['card'] for tag in player.find_all(card=True) if tag != ''])
                             )
-        # print(gameNAME)
-        # print(gameSTAKES)
-        # print(gameID)
-        # print(board)
-        # print(nicknames)
-        # print(positions)
-        # print(stacks)
+
+
         #------               #added clear_name
         for i in range(len(nicknames)):
             nicknames[i] = clear_name(nicknames[i])
@@ -149,7 +149,6 @@ for file_hand in os.listdir():
 
         for stage in summary.find_all('section', recursive=False):
             f = stage.find('header').text.strip('\n\r ').split()
-            # print(f)
 
             game['hand'].setdefault(f[0], {})
             game['hand'][f[0]].update(pot=f[1])
@@ -158,12 +157,12 @@ for file_hand in os.listdir():
             game['hand'][f[0]].setdefault('sizes', [])
 
             actions = stage.section.select('._action')
-            #print(actions)
+
             player = []
             for action in actions:
                 if ('_expanded' in action['class']):
                     winner = action.find('div', {'class':'_nickname'}).text.strip()
-                    winner = clear_name(winner)#added clear_name
+                    winner = clear_name(winner)
                     game['status']['player'][winner] = 2
                 elif ('_spread' in action.find('div', {'class' : '_content'})['class']):
                     pass
@@ -173,21 +172,17 @@ for file_hand in os.listdir():
                     player = [x for x in action.text.strip('\n\r ').split('\n') if x != '']
                     if '_mine' in action['class']:
                         player.insert(0, action.find('pokercraft-hh-avatar')['position'])
-                    # print(player)
+
                     if player[2].lower() == 'fold':
-                        game['status']['player'][clear_name(player[1])] = 0#added clear_name
-                    game['hand'][f[0]]['players'].append(clear_name(player[1]))#added clear_name
+                        game['status']['player'][clear_name(player[1])] = 0
+                    game['hand'][f[0]]['players'].append(clear_name(player[1]))
                     game['hand'][f[0]]['plays'].append(player[2])
                     if len(player) > 3:
                         game['hand'][f[0]]['sizes'].append(' [%s USD]' % player[3])
                     else:
                         game['hand'][f[0]]['sizes'].append('')
 
-        # print(game)
-        # print(positions.index('BTN'))
-        # print(game['status']['player'])
-        # print(check_winner(game['status']['player']))
-        # print(cards_known)
+
         line6 = '%s posts small blind %s.\n' % \
                 (game['hand']['Blind']['players'][0],
                  game['hand']['Blind']['sizes'][0])
@@ -247,6 +242,7 @@ for file_hand in os.listdir():
                                     game['hand']['River']['sizes'][i]
                                     ]) +'\n'
                         )
+
         # the winning amount I may take from River unless showdown was true.
         # If the max of status is 1, then hands finished w/o showdown.
         # If there was showdown at least one player has 'status'=2.

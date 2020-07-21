@@ -4,6 +4,8 @@ import re
 import datetime
 import os
 
+
+
 def check_winner(dictionary):
     '''
         function should get as an argument 'game['status']['player']'.
@@ -24,7 +26,7 @@ def gather_player_bets(game):
                 bets.setdefault(player, [])
                 if size != '':
                     bets[player].append(float(re.search(r'\d+(\.)*\d*', size).group()))
-    # print(bets)
+
     return bets
 
 
@@ -34,7 +36,7 @@ def initial_stacks(nicknames, stacks, game):
         i = nicknames.index(player)
         stacks[i] = float(re.search(r'\d+(\.)*\d*', stacks[i]).group())
         stacks[i] += sum(bets[player])
-    # print(stacks)
+
     return stacks
 
 
@@ -60,7 +62,7 @@ def clear_name(nickname):
         nickname = re.sub(r'[():]', '', nickname).strip()
         return nickname
 #-------------------------------------------------------------------------------
-handFile = open('August_2019.txt', 'w')# <--------------------- change to 'a' ?
+handFile = open('August_2019.txt', 'w')
 errorFile = open('errors.txt', 'w')
 dat = input()
 for file_hand in os.listdir():
@@ -116,17 +118,10 @@ for file_hand in os.listdir():
                 cards_known.setdefault(nicknames[-1],
                             ', '.join([tag['card'] for tag in player.find_all(card=True) if tag != ''])
                             )
-        # print(gameNAME)
-        # print(gameSTAKES)
-        # print(gameID)
-        # print(board)
-        # print(nicknames)
-        # print(positions)
-        # print(stacks)
-        #------               #added clear_name
+
         for i in range(len(nicknames)):
             nicknames[i] = clear_name(nicknames[i])
-        #-----------------------
+
         num_player = len(nicknames)#sum([1 for pos in positions if pos != 'Sitting Out' ])# <---- new added to substruct number of players of sitting out.
         game['status'].setdefault('player', {})
         game['status']['player'] = game['status']['player'].fromkeys(nicknames, 1)
@@ -149,7 +144,6 @@ for file_hand in os.listdir():
 
         for stage in summary.find_all('section', recursive=False):
             f = stage.find('header').text.strip('\n\r ').split()
-            # print(f)
 
             game['hand'].setdefault(f[0], {})
             game['hand'][f[0]].update(pot=f[1])
@@ -158,7 +152,7 @@ for file_hand in os.listdir():
             game['hand'][f[0]].setdefault('sizes', [])
 
             actions = stage.section.select('._action')
-            #print(actions)
+
             player = []
             for action in actions:
                 if ('_expanded' in action['class']):
@@ -173,7 +167,7 @@ for file_hand in os.listdir():
                     player = [x for x in action.text.strip('\n\r ').split('\n') if x != '']
                     if '_mine' in action['class']:
                         player.insert(0, action.find('pokercraft-hh-avatar')['position'])
-                    # print(player)
+
                     if player[2].lower() == 'fold':
                         game['status']['player'][clear_name(player[1])] = 0#added clear_name
                     game['hand'][f[0]]['players'].append(clear_name(player[1]))#added clear_name
@@ -183,11 +177,7 @@ for file_hand in os.listdir():
                     else:
                         game['hand'][f[0]]['sizes'].append('')
 
-        # print(game)
-        # print(positions.index('BTN'))
-        # print(game['status']['player'])
-        # print(check_winner(game['status']['player']))
-        # print(cards_known)
+
         line6 = '%s posts small blind %s.\n' % \
                 (game['hand']['Blind']['players'][0],
                  game['hand']['Blind']['sizes'][0])
