@@ -1,5 +1,6 @@
 # Convert-GGnet-to-HM2
 
+Program pobiera kod html i konwertuje znalezione tam dane do odpowiedniej formy zapisując je w pliku txt.
 
 Krótki opis plików:
 - download.py:
